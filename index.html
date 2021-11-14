@@ -1,0 +1,165 @@
+<html>
+<head>
+    <title>Лабораторная работа</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+    <div>
+        <form class="fxyz">
+            <h3>Добавление точек для аппроксимации</h3>
+            <input type="text" id="inx" class="coord" v-on:input="inputChangeHandler1" placeholder="Кордината X" />
+            <input type="text" id="iny" class="coord" v-on:input="inputChangeHandler2" placeholder="Координата Y" />
+            <input type="text" id="inz" class="coord" v-on:input="inputChangeHandler3" placeholder="Координата Z" />
+            <input
+                    type="button"
+                    id="b1" class="but"
+                    value="Добавить точку"
+                    onclick="add_points()"
+                    v-on:click="addNew"
+            />
+            <input
+                    type="button"
+                    id="btest"
+                    class="but"
+                    value="Составить систему уравнений"
+                    onclick="check()"
+            />
+        </form>
+    </div>
+<!--    LR1-->
+    <div style="position: fixed">
+        <form class="fxyz">
+            <h3 style="color: #1CB520;">Уравнение вида: z = ax + by + c</h3>
+            <h3>Система уравнений по МНК</h3>
+            <span>a * </span><input type="text" class="x_x" readonly style="width: 25px;"/>
+            <span> + b * </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span> + c * </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="x_z" readonly style="width: 25px;"/>
+            <br />
+            <span>a * </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span> + b * </span><input type="text" class="y_y" readonly style="width: 25px;"/>
+            <span> + c * </span><input type="text" class="y_1" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="y_z" readonly style="width: 25px;"/>
+            <br />
+            <span>a * </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span> + b * </span><input type="text" class="y_1" readonly style="width: 25px;"/>
+            <span> + c * </span><input type="text" class="n111" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="z_1" readonly style="width: 25px;"/>
+            <h3>Решение системы уравнений методом Гаусса</h3>
+            <table border="1" rules="1" cellpadding="3" style="margin-bottom: 20px;">
+                <tr>
+                    <td>a1 = &sum;(x<sup>2</sup>)</td>
+                    <td>b1 = &sum;(x&#183;y)</td>
+                    <td>c1 = &sum;(x)</td>
+                    <td>d1 = &sum;(x&#183;z)</td>
+                    <td>для первого уравнения</td>
+                </tr>
+                <tr>
+                    <td>a2 = b1 = &sum;(x&#183;y)</td>
+                    <td>b2 = &sum;(y<sup>2</sup>)</td>
+                    <td>c2 = &sum;(y)</td>
+                    <td>d2 = &sum;(y&#183;z)</td>
+                    <td>для второго уравнения</td>
+                </tr>
+                <tr>
+                    <td>a3 = с1 = &sum;(x)</td>
+                    <td>b3 = с2 = &sum;(y)</td>
+                    <td>c3 = &sum;(1)</td>
+                    <td>d3 = &sum;(z)</td>
+                    <td>для третьего уравнения</td>
+                </tr>
+            </table>
+            <span>k12 = -a2 / a1 = -</span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span> / </span><input type="text" class="x_x" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="k_12" readonly style="width: 55px;"/>
+            <br />
+            <span>k13 = -a3 / a1 = -</span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span> / </span><input type="text" class="x_x" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="k_13" readonly style="width: 55px;"/>
+            <br />
+            <span>k23 = -(</span><input type="text" class="y_1" readonly style="width: 25px;"/>
+            <span> + k13 * </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span>) / (</span><input type="text" class="y_y" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span>) = </span><input type="text" class="k_23" readonly style="width: 55px;"/>
+            <br />
+            <span>x3 = ((</span><input type="text" class="z_1" readonly style="width: 25px;"/>
+            <span> + k13 * </span><input type="text" class="x_z" readonly style="width: 25px;"/>
+            <span>) + k23 * (</span><input type="text" class="y_z" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_z" readonly style="width: 25px;"/>
+            <span>)) / ((</span><input type="text" class="n111" readonly style="width: 25px;"/>
+            <span> + k13 * </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span>) + k23 * (</span><input type="text" class="y_1" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span>)) = </span><input type="text" class="x3" readonly style="width: 55px;"/>
+            <br />
+            <span>x2 = (</span><input type="text" class="y_z" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_z" readonly style="width: 25px;"/>
+            <span>) - (</span><input type="text" class="y_1" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span>) * x3) / (</span><input type="text" class="y_y" readonly style="width: 25px;"/>
+            <span> + k12 * </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span>) = </span><input type="text" class="x2" readonly style="width: 55px;"/>
+            <br />
+            <span>x1 = (</span><input type="text" class="x_z" readonly style="width: 25px;"/>
+            <span> - </span><input type="text" class="x_y" readonly style="width: 25px;"/>
+            <span> * x2 - </span><input type="text" class="x_1" readonly style="width: 25px;"/>
+            <span> * x3) / </span><input type="text" class="x_x" readonly style="width: 25px;"/>
+            <span> = </span><input type="text" class="x1" readonly style="width: 55px;"/>
+            <h3 style="visibility: hidden;" class="h3">Уравнение прямой: z =
+                <span id="span1"></span> * x +
+                <span id="span2"></span> * y +
+                <span id="span3"></span>
+            </h3>
+        </form>
+        <label for="s1" style="text-decoration: none;" onchange="s1()">
+            <input id="s1" type="checkbox" class="switch" />
+            Показать ЛР2
+        </label>
+    </div>
+<!--    LR2-->
+    <div style="position: fixed; margin-left: 50%; visibility: hidden;" id="lr2">
+            <form class="fxyz">
+                <h3 style="color: #1CB520;">
+                    Уравнение вида: z = ax^2 + by^2 + c
+                </h3>
+                <h3 style="color: #1CB520" class="h3">
+                    Уравнение: z = <span id="span11"></span> * x^2 +
+                    <span id="span22"></span> * y^2 +
+                    <span id="span33"></span>
+                </h3>
+                <img src="https://lms2.sseu.ru/courses/eresmat/course1/razd12z1/par12_6z1.files/image003.gif" alt="" />
+                <br />
+                <h4>
+                    du/dx = [2 * a] * x / z,<br />
+                    du/dy = [2 * b] * y / z,<br />
+                    du/dz = ([a] * x ^ 2 + [b] * y ^ 2 + [c]) / z ^ 2
+                </h4>
+                <h4>
+                    <span>du/dx = </span><span id="span11_2"></span><span> * x / z</span><br />
+                    <span>du/dy = </span><span id="span22_2"></span><span> * y / z</span><br />
+                    <span>du/dz = (</span><span id="span111"></span>
+                    <span> * x ^ 2 + </span><span id="span222"></span>
+                    <span> * y ^ 2 + </span><span id="span333"></span>
+                    <span>) / z ^ 2</span>
+                </h4>
+                <h4>
+                    <span>Модуль grad(u) - наибольшая скорость возрастания функции:</span><br />
+                    <img src="https://chart.googleapis.com/chart?cht=tx&chl=|grad(u)_{A}|%20=%20\sqrt{(\frac{%20\partial%20u}{%20\partial%20x})^{2}%20%2B%20(\frac{%20\partial%20u}{%20\partial%20y})^{2}%20%2B%20(\frac{%20\partial%20u}{%20\partial%20z})^{2}}" alt="" />
+                </h4>
+<!--                <ul class="list">-->
+<!--                    <li class="list-item" v-for="string in strings">-->
+<!--                        {{ string }}-->
+<!--                    </li>-->
+<!--                </ul>-->
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="vue1.js"></script>
+    <script type="text/javascript" src="script1.js"></script>
+</body>
+</html>
