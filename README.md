@@ -1,2 +1,2 @@
-# methodology-science-research
-Repository for lab. works
+# Методология научных исследований
+*Репозиторий для лабораторных*
